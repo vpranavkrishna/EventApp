@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        receiver2 = new Receiver2(this);
         managerCompat = NotificationManagerCompat.from(this);
         Eventname = findViewById(R.id.eventname);
         Eventmessage = findViewById(R.id.eventmessage);

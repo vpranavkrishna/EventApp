@@ -13,7 +13,6 @@ public class BaseApp extends Application {
     public static final String CHANNEL_ID1 = "channel1";
     public static final String CHANNEL_ID2 ="channel2" ;
     private Uri notification = Uri.parse("android.resource://com.delta_inductions.eventapp/raw/notification_sound");
-//    Uri notification =Uri.parse("android.resource://"+ context.getPackageName() +"/raw/notification_sound");
     private AudioAttributes audioAttributes = new AudioAttributes.Builder()
             .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
             .setUsage(AudioAttributes.USAGE_NOTIFICATION)
