@@ -100,14 +100,16 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
             c.add(Calendar.DATE, 1);
         }
         AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        Intent intent1 = new Intent(this, Receiver.class);
-        eventname = Eventname.getText().toString();
-        eventmessage  = Eventmessage.getText().toString();
-        intent1.putExtra("title",eventname);
-        intent1.putExtra("message",eventmessage);
-        Log.d(TAG, "startAlarm: "+eventmessage+eventname);
-        pendingIntent1 = PendingIntent.getBroadcast(this, 0, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
-        manager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis() - elapsed, pendingIntent1);
+        if(!(System.currentTimeMillis() > c.getTimeInMillis() - elapsed)) {
+            Intent intent1 = new Intent(this, Receiver.class);
+            eventname = Eventname.getText().toString();
+            eventmessage = Eventmessage.getText().toString();
+            intent1.putExtra("title", eventname);
+            intent1.putExtra("message", eventmessage);
+            Log.d(TAG, "startAlarm: " + eventmessage + eventname);
+            pendingIntent1 = PendingIntent.getBroadcast(this, 0, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
+            manager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis() - elapsed, pendingIntent1);
+        }
         Intent intent2 = new Intent(this, Receiver2.class);
         eventname = Eventname.getText().toString();
         eventmessage  = Eventmessage.getText().toString();
