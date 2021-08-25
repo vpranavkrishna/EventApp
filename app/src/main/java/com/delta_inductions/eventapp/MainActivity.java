@@ -6,6 +6,7 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.DialogFragment;
 
 import android.app.AlarmManager;
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -97,13 +98,15 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         intent.putExtra("title",eventname);
         intent.putExtra("message",eventmessage);
         Log.d(TAG, "startAlarm: "+eventmessage+eventname);
-        pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+        pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         if (c.before(Calendar.getInstance())) {
             c.add(Calendar.DATE, 1);
         }
-
-        manager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis() -elapsed , pendingIntent);
+        manager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+//        Notification.Builder builder = new Notification.Builder(this);
+//        builder.setDeleteIntent(pendingIntent);
+//        manager.setExact(AlarmManager.RTC_WAKEUP,c.getTimeInMillis()+60000,pendingIntent);
     }
 
     private void updatetext(Calendar c) {

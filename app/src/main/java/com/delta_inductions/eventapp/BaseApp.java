@@ -2,11 +2,8 @@ package com.delta_inductions.eventapp;
 import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.content.ContentProvider;
 import android.os.Build;
-
 import androidx.annotation.RequiresApi;
-import androidx.core.app.NotificationManagerCompat;
 
 public class BaseApp extends Application {
     public static final String CHANNEL ="channel";
