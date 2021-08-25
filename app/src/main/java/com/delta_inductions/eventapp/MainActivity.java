@@ -6,7 +6,6 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.DialogFragment;
 
 import android.app.AlarmManager;
-import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -24,7 +23,7 @@ import android.widget.Toast;
 import java.text.DateFormat;
 import java.util.Calendar;
 
-public class MainActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
+public class MainActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener{
     private NotificationManagerCompat managerCompat;
     private static final String TAG = "MainActivity";
     long elapsed = 15*60*1000;
@@ -33,13 +32,18 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     private EditText Eventmessage;
     private String eventname;
     private String eventmessage;
-    private PendingIntent pendingIntent;
+    private PendingIntent pendingIntent2;
     private Button setevent;
     private Button cancelevent;
+    private PendingIntent pendingIntent1;
+    private AlarmManager  alarmManager;
+    private Receiver2 receiver2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+//        receiver2 = new Receiver2(this);
         managerCompat = NotificationManagerCompat.from(this);
         Eventname = findViewById(R.id.eventname);
         Eventmessage = findViewById(R.id.eventmessage);
@@ -72,8 +76,9 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     }
 
     private void canceleventfun() {
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarmManager.cancel(pendingIntent);
+        alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(pendingIntent1);
+        alarmManager.cancel(pendingIntent2);
         textView.setText("Event canceled");
     }
 
@@ -91,22 +96,26 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void startEvent(Calendar c) {
-        AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        Intent intent = new Intent(this, Receiver.class);
-        eventname = Eventname.getText().toString();
-        eventmessage  = Eventmessage.getText().toString();
-        intent.putExtra("title",eventname);
-        intent.putExtra("message",eventmessage);
-        Log.d(TAG, "startAlarm: "+eventmessage+eventname);
-        pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
         if (c.before(Calendar.getInstance())) {
             c.add(Calendar.DATE, 1);
         }
-        manager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
-//        Notification.Builder builder = new Notification.Builder(this);
-//        builder.setDeleteIntent(pendingIntent);
-//        manager.setExact(AlarmManager.RTC_WAKEUP,c.getTimeInMillis()+60000,pendingIntent);
+        AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        Intent intent1 = new Intent(this, Receiver.class);
+        eventname = Eventname.getText().toString();
+        eventmessage  = Eventmessage.getText().toString();
+        intent1.putExtra("title",eventname);
+        intent1.putExtra("message",eventmessage);
+        Log.d(TAG, "startAlarm: "+eventmessage+eventname);
+        pendingIntent1 = PendingIntent.getBroadcast(this, 0, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
+        manager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis() - elapsed, pendingIntent1);
+        Intent intent2 = new Intent(this, Receiver2.class);
+        eventname = Eventname.getText().toString();
+        eventmessage  = Eventmessage.getText().toString();
+        intent2.putExtra("title",eventname);
+        intent2.putExtra("message",eventmessage);
+        pendingIntent2 = PendingIntent.getBroadcast(this, 1, intent2, PendingIntent.FLAG_UPDATE_CURRENT);
+        manager.setExact(AlarmManager.RTC_WAKEUP,c.getTimeInMillis(),pendingIntent2);
+
     }
 
     private void updatetext(Calendar c) {
@@ -114,4 +123,5 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         timeText += DateFormat.getTimeInstance(DateFormat.SHORT).format(c.getTime());
         textView.setText(timeText);
     }
+
 }
